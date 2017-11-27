@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
@@ -13,7 +14,8 @@ namespace RaspberryService.Command
 {
     class Commander
     {
-        public const string SOCK_PORT = "8723";
+        public const string SOCK_PORT = "8724";
+        public const string REQUEST_INVOKE_PREFIX = "Request_";
 
         private BackgroundTaskDeferral deferral;
 
@@ -29,6 +31,12 @@ namespace RaspberryService.Command
         private void Initialize()
         {
             this.InitializeSocket();
+        }
+
+        private void Dispose()
+        {
+            this.Listener.Dispose();
+            deferral.Complete();
         }
 
         private async void InitializeSocket()
@@ -57,21 +65,31 @@ namespace RaspberryService.Command
                 ProcessRequest(request);
             }
 
-            deferral.Complete();
+            Dispose();
         }
 
         private void ProcessRequest(Request request)
         {
-            switch (request.command)
+            // Note: Możemy pobrać również typ danego kontrolera
+            string commandName = REQUEST_INVOKE_PREFIX + request.command;
+            Type commanderType = this.GetType();
+            MethodInfo method = commanderType.GetMethod(commandName);
+
+            if (method != null)
             {
-                case "turnLightOn":
-                    break;
-                case "turnLightOff":
-                    break;
-                case "stop":
-                    running = false;
-                    break;
+                Utils.LogLine("Wywołuje metodę: " + commandName);
+                Object[] parameters = new Object[] { request.parameters };
+                method.Invoke(this, parameters);
+            } 
+            else
+            {
+                Utils.LogLine("Metoda: " + commandName + " nie istnieje");
             }
+        }
+
+        public void Request_TurnLightOn(Dictionary<string, dynamic> parameters)
+        {
+            Utils.LogLine("turn light on!");
         }
 
         /* Entry point */

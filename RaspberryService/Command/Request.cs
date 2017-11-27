@@ -9,6 +9,6 @@ namespace RaspberryService.Command
     class Request
     {
         public string command { get; set; }
-        public Object parameters { get; set; }
+        public Dictionary<string, dynamic> parameters { get; set; }
     }
 }
