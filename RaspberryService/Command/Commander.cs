@@ -28,6 +28,9 @@ namespace RaspberryService.Command
         // Lightbulb
         private Lightbulb.Service LightbulbService;
 
+        // Motors
+        private Motor.Service MotorService;
+
         public Commander(BackgroundTaskDeferral deferral)
         {
             this.deferral = deferral;
@@ -42,7 +45,8 @@ namespace RaspberryService.Command
         private void Initialize()
         {
             this.InitializeSocket();
-            this.InitializeLightbulbSerice();
+            this.InitializeLightbulbService();
+            this.InitializeMotorService();
         }
 
 
@@ -55,11 +59,17 @@ namespace RaspberryService.Command
             Utils.LogLine("Nasłuchiwanie StreamSocket na porcie " + SOCK_PORT);
         }
 
-        private void InitializeLightbulbSerice()
+        private void InitializeLightbulbService()
         {
             this.LightbulbService = new Lightbulb.Service();
         }
-              
+
+        private void InitializeMotorService()
+        {
+            this.MotorService = new Motor.Service();
+        }
+
+
         private async void OnStreamSocketConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
             Utils.LogLine("Otrzymano połączenie StreamSocket.");
@@ -117,6 +127,21 @@ namespace RaspberryService.Command
         public void Request_SetColorWhite(Dictionary<string, dynamic> parameters)
         {
             LightbulbService.SetColorWhite();
+        }
+
+        public void Request_SpinClockwise(Dictionary<string, dynamic> parameters)
+        {
+            MotorService.MotorA.SpinClockwise();
+        }
+
+        public void Request_SpinCounterClockwise(Dictionary<string, dynamic> parameters)
+        {
+            MotorService.MotorA.SpinCounterClockwise();
+        }
+
+        public void Request_Stop(Dictionary<string, dynamic> parameters)
+        {
+            MotorService.MotorA.Stop();
         }
 
         /* Entry point */
