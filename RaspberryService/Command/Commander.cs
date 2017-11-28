@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RaspberryService.Lightbulb;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,16 +22,15 @@ namespace RaspberryService.Command
 
         private bool running = true;
 
+        // Socket
         private StreamSocketListener Listener;
+
+        // Lightbulb
+        private Lightbulb.Service LightbulbService;
 
         public Commander(BackgroundTaskDeferral deferral)
         {
             this.deferral = deferral;
-        }
-
-        private void Initialize()
-        {
-            this.InitializeSocket();
         }
 
         private void Dispose()
@@ -38,6 +38,13 @@ namespace RaspberryService.Command
             this.Listener.Dispose();
             deferral.Complete();
         }
+
+        private void Initialize()
+        {
+            this.InitializeSocket();
+            this.InitializeLightbulbSerice();
+        }
+
 
         private async void InitializeSocket()
         {
@@ -48,6 +55,11 @@ namespace RaspberryService.Command
             Utils.LogLine("Nasłuchiwanie StreamSocket na porcie " + SOCK_PORT);
         }
 
+        private void InitializeLightbulbSerice()
+        {
+            this.LightbulbService = new Lightbulb.Service();
+        }
+              
         private async void OnStreamSocketConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
             Utils.LogLine("Otrzymano połączenie StreamSocket.");
@@ -89,7 +101,22 @@ namespace RaspberryService.Command
 
         public void Request_TurnLightOn(Dictionary<string, dynamic> parameters)
         {
-            Utils.LogLine("turn light on!");
+            LightbulbService.TurnLightOn();
+        }
+
+        public void Request_TurnLightOff(Dictionary<string, dynamic> parameters)
+        {
+            LightbulbService.TurnLightOff();
+        }
+
+        public void Request_SetColorHue(Dictionary<string, dynamic> parameters)
+        {
+            LightbulbService.SetColorHue(0x88FFFFFF);
+        }
+
+        public void Request_SetColorWhite(Dictionary<string, dynamic> parameters)
+        {
+            LightbulbService.SetColorWhite();
         }
 
         /* Entry point */
