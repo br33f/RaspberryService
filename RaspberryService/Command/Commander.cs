@@ -31,6 +31,9 @@ namespace RaspberryService.Command
         // Motors
         private Motor.Service MotorService;
 
+        // Light emitting diode
+        private Rgb.Service RgbService;
+
         public Commander(BackgroundTaskDeferral deferral)
         {
             this.deferral = deferral;
@@ -47,6 +50,7 @@ namespace RaspberryService.Command
             this.InitializeSocket();
             this.InitializeLightbulbService();
             this.InitializeMotorService();
+            this.InitializeRgbService();
         }
 
 
@@ -69,6 +73,10 @@ namespace RaspberryService.Command
             this.MotorService = new Motor.Service();
         }
 
+        private void InitializeRgbService()
+        {
+            this.RgbService = new Rgb.Service();
+        }
 
         private async void OnStreamSocketConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
