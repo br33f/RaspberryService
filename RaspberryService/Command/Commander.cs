@@ -81,21 +81,25 @@ namespace RaspberryService.Command
         private async void OnStreamSocketConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
         {
             Utils.LogLine("Otrzymano połączenie StreamSocket.");
-
-            Stream inStream = args.Socket.InputStream.AsStreamForRead();
-            StreamReader reader = new StreamReader(inStream);
-
-            while (running)
+            try
             {
-                string rawRequest = await reader.ReadLineAsync();
-                string decodedRequest = Utils.Base64Decode(rawRequest);
-                Utils.LogLine("Odebrano: " + decodedRequest);
+                Stream inStream = args.Socket.InputStream.AsStreamForRead();
+                StreamReader reader = new StreamReader(inStream);
 
-                Request request = JsonConvert.DeserializeObject<Request>(decodedRequest);
-                ProcessRequest(request);
+                while (running)
+                {
+                    string rawRequest = await reader.ReadLineAsync();
+                    string decodedRequest = Utils.Base64Decode(rawRequest);
+                    Utils.LogLine("Odebrano: " + decodedRequest);
+
+                    Request request = JsonConvert.DeserializeObject<Request>(decodedRequest);
+                    ProcessRequest(request);
+                }
             }
-
-            Dispose();
+            catch (Exception e)
+            {
+                Utils.LogLine("Zakończono połączenie StreamSocket.");
+            }
         }
 
         private void ProcessRequest(Request request)
