@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +9,6 @@ namespace RaspberryService.Command
     class Request
     {
         public string command { get; set; }
-        public Dictionary<string, dynamic> parameters { get; set; }
+        public Hashtable parameters { get; set; }
     }
 }

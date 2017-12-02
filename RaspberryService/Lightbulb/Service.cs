@@ -1,4 +1,6 @@
 ﻿using DeviceProviders;
+using RaspberryService.Command;
+using RaspberryService.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,17 +11,16 @@ using Windows.Foundation;
 
 namespace RaspberryService.Lightbulb
 {
-    class Service
+    class Service : AbstractDeviceService
     {
-        public const string DEFAULT_LIGHTBULB_DEVICE_ID = "1feb85536970ceb754c167f409b7f4a5";
+        private const string DEFAULT_LIGHTBULB_DEVICE_ID = "1feb85536970ceb754c167f409b7f4a5";
 
         private AllJoynProvider Provider;
         private ObservableCollection<LightbulbDevice> Lightbulbs { get; set; }
 
-        public Service()
+        public Service(ControlerService outputControlerService) : base(outputControlerService)
         {
             this.Lightbulbs = new ObservableCollection<LightbulbDevice>();
-
             this.InitializeAlljoyn();
         }
 
@@ -39,6 +40,8 @@ namespace RaspberryService.Lightbulb
 
             LightbulbDevice joinedDevice = new LightbulbDevice(args.Service);
             Lightbulbs.Add(joinedDevice);
+
+            NotifyServiceUp("IsAllJoynEnabled");
         }
 
         private void AlljoynServiceDropped(IProvider sender, ServiceDroppedEventArgs args)
@@ -47,6 +50,11 @@ namespace RaspberryService.Lightbulb
 
             LightbulbDevice droppedItem = Lightbulbs.Where(deviceItem => deviceItem.DeviceId == args.Service.AboutData.DeviceId).First();
             Lightbulbs.Remove(droppedItem);
+
+            if (Lightbulbs.Count == 0)
+            {
+                NotifyServiceDown("IsAllJoynEnabled");
+            }
         }
 
         private LightbulbDevice GetLightbulb()
@@ -71,7 +79,7 @@ namespace RaspberryService.Lightbulb
             Utils.LogLine("Włączono żarówkę");
         }
 
-        public async void SetColorWhite(UInt32 colorTemperature = UInt32.MaxValue)
+        public async void SetColorWhite(UInt32 colorTemperature)
         {
             await GetLightbulb().ColorTemperature.SetValueAsync(colorTemperature);
             await GetLightbulb().Saturation.SetValueAsync((UInt32) UInt32.MinValue);
@@ -87,7 +95,7 @@ namespace RaspberryService.Lightbulb
             Utils.LogLine("Ustawiono kolor na: " + hue);
         }
 
-        public async void SetBrightness(UInt32 brightness = UInt32.MaxValue)
+        public async void SetBrightness(UInt32 brightness)
         {
             await GetLightbulb().Brightness.SetValueAsync(brightness);
             Utils.LogLine("Ustawiono jasność żarówki na " + brightness);

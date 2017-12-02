@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RaspberryService.Command;
+using RaspberryService.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,22 +10,22 @@ using Windows.Devices.Gpio;
 
 namespace RaspberryService.Rgb
 {
-    enum DiodeColor : int
+    public enum DiodeColor : int
     {
         RED = 17,
         GREEN = 27,
         BLUE = 22
     }
 
-    class Service
+    class Service : AbstractDeviceService
     {
-        public const GpioPinValue DEFAULT_DIODE_PIN_VALUE = GpioPinValue.Low;
+        private const GpioPinValue DEFAULT_DIODE_PIN_VALUE = GpioPinValue.Low;
 
         private GpioController Controller;
 
         private Dictionary<DiodeColor, GpioPin> Diode;
 
-        public Service()
+        public Service(ControlerService outputControlerService) : base(outputControlerService)
         {
             this.InitializeGPIO();
         }
@@ -64,6 +66,8 @@ namespace RaspberryService.Rgb
                     diodePin.SetDriveMode(GpioPinDriveMode.Output);
 
                     this.Diode.Add(pin, diodePin);
+
+                    NotifyServiceUp("IsLedEnabled");
 
                     Utils.LogLine("Pomyślnie zainicjalizowano diodę " + pinName);
                 }

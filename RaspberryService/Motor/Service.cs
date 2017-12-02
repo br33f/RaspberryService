@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RaspberryService.Command;
+using RaspberryService.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -8,11 +10,11 @@ using Windows.Devices.Gpio;
 
 namespace RaspberryService.Motor
 {
-    class Service
+    class Service : AbstractDeviceService
     {
         // Motor A
-        public const int MOTOR_A_PIN1 = 23;
-        public const int MOTOR_A_PIN2 = 24;
+        private const int MOTOR_A_PIN1 = 23;
+        private const int MOTOR_A_PIN2 = 24;
 
         public MotorDevice MotorA { get; set; }
 
@@ -21,10 +23,12 @@ namespace RaspberryService.Motor
 
         private GpioController Controller;
 
-        public Service()
+
+        public Service(ControlerService outputControlerService) : base(outputControlerService)
         {
             this.InitializeGPIO();
         }
+
 
         private void InitializeGPIO()
         {
@@ -43,6 +47,7 @@ namespace RaspberryService.Motor
         private void InitializeMotors()
         {
             this.MotorA = new MotorDevice(this.Controller, MOTOR_A_PIN1, MOTOR_A_PIN2);
+            NotifyServiceUp("IsMotorEnabled");
         }
        
     }

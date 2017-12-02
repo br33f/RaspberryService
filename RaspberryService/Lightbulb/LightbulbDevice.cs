@@ -1,5 +1,7 @@
 ﻿using DeviceProviders;
+using RaspberryService.Command;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +33,7 @@ namespace RaspberryService.Lightbulb
 
             this.InitializeAboutData();
             this.InitializeLampState();
+            this.SendLightbulbSocketUpdate();
         }
 
         private void InitializeAboutData()
@@ -52,6 +55,21 @@ namespace RaspberryService.Lightbulb
             this.ColorTemperature = res.GetProperty("ColorTemp");
             this.Hue = res.GetProperty("Hue");
             this.Saturation = res.GetProperty("Saturation");
+        }
+
+        public async void SendLightbulbSocketUpdate()
+        {
+            Request request = new Request();
+            request.command = "LightbulbUpdate";
+
+            ReadValueResult onOff = await this.OnOff.ReadValueAsync();
+            ReadValueResult brightness = await this.Brightness.ReadValueAsync();
+
+            request.parameters = new Hashtable();
+            request.parameters.Add("IsOnOff", onOff.Value);
+            request.parameters.Add("Brightness", brightness.Value);
+
+            ControlerService.Instance.SendRequest(request);
         }
     }
 }

@@ -7,9 +7,9 @@ using Windows.Devices.Gpio;
 
 namespace RaspberryService.Motor
 {
-    class MotorDevice
+    public sealed class MotorDevice
     {
-        public const GpioPinValue DEFAULT_MOTOR_PIN_VALUE = GpioPinValue.Low;
+        private const GpioPinValue DEFAULT_MOTOR_PIN_VALUE = GpioPinValue.Low;
 
         private GpioController Controller;
 

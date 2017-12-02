@@ -97,7 +97,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\Commander.cs" />
+    <Compile Include="Command\Invoker.cs" />
     <Compile Include="Command\Request.cs" />
+    <Compile Include="Command\ControlerService.cs" />
+    <Compile Include="Common\AbstractDeviceService.cs" />
     <Compile Include="Lightbulb\LightbulbDevice.cs" />
     <Compile Include="Lightbulb\Service.cs" />
     <Compile Include="Motor\MotorDevice.cs" />
