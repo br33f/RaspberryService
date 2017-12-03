@@ -64,10 +64,16 @@ namespace RaspberryService.Lightbulb
 
             ReadValueResult onOff = await this.OnOff.ReadValueAsync();
             ReadValueResult brightness = await this.Brightness.ReadValueAsync();
+            ReadValueResult colorTemperature = await this.ColorTemperature.ReadValueAsync();
+            ReadValueResult hue = await this.Hue.ReadValueAsync();
+            ReadValueResult saturation = await this.Saturation.ReadValueAsync();
 
             request.parameters = new Hashtable();
             request.parameters.Add("IsOnOff", onOff.Value);
             request.parameters.Add("Brightness", brightness.Value);
+            request.parameters.Add("ColorTemperature", colorTemperature.Value);
+            request.parameters.Add("Hue", hue.Value);
+            request.parameters.Add("IsColor", (UInt32)saturation.Value > UInt32.MinValue);
 
             ControlerService.Instance.SendRequest(request);
         }

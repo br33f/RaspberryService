@@ -79,20 +79,26 @@ namespace RaspberryService.Lightbulb
             Utils.LogLine("Włączono żarówkę");
         }
 
-        public async void SetColorWhite(UInt32 colorTemperature)
+        public async void SetColorTemperature(UInt32 colorTemperature)
         {
             await GetLightbulb().ColorTemperature.SetValueAsync(colorTemperature);
-            await GetLightbulb().Saturation.SetValueAsync((UInt32) UInt32.MinValue);
 
-            Utils.LogLine("Ustawiono kolor biały na: " + colorTemperature);
+            Utils.LogLine("Ustawiono temperaturę światła na : " + colorTemperature);
         }
 
-        public async void SetColorHue(UInt32 hue)
+        public async void SetHue(UInt32 hue)
         {
             await GetLightbulb().Hue.SetValueAsync(hue);
-            await GetLightbulb().Saturation.SetValueAsync((UInt32) UInt32.MaxValue);
 
-            Utils.LogLine("Ustawiono kolor na: " + hue);
+            Utils.LogLine("Ustawiono hue na: " + hue);
+        }
+
+        public async void SetIsColor(bool isColor)
+        {
+            UInt32 saturationValue = isColor ? UInt32.MaxValue : UInt32.MinValue;
+            await GetLightbulb().Saturation.SetValueAsync(saturationValue);
+
+            Utils.LogLine("Ustawiono isColor na: " + isColor);
         }
 
         public async void SetBrightness(UInt32 brightness)

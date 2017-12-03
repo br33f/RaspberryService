@@ -35,19 +35,27 @@ namespace RaspberryService.Command
             LightbulbService.TurnLightOff();
         }
 
-        public void Request_SetColorHue(Hashtable parameters)
+        public void Request_SetHue(Hashtable parameters)
         {
-            LightbulbService.SetColorHue(0x88FFFFFF);
+            UInt32 hueValue = Convert.ToUInt32(parameters["hue"]);
+            LightbulbService.SetHue(hueValue);
         }
 
-        public void Request_SetColorWhite(Hashtable parameters)
+        public void Request_SetColorTemperature(Hashtable parameters)
         {
-            LightbulbService.SetColorWhite(UInt32.MaxValue);
+            UInt32 colorTemperatureValue = Convert.ToUInt32(parameters["colorTemperature"]);
+            LightbulbService.SetColorTemperature(colorTemperatureValue);
+        }
+
+        public void Request_SetIsColor(Hashtable parameters)
+        {
+            bool isColorValue = (bool)parameters["isColor"];
+            LightbulbService.SetIsColor(isColorValue);
         }
 
         public void Request_SetBrightness(Hashtable parameters)
         {
-            UInt32 brightnessValue = (UInt32)(long)parameters["brightness"];
+            UInt32 brightnessValue = Convert.ToUInt32(parameters["brightness"]);
             LightbulbService.SetBrightness(brightnessValue);
         }
 
