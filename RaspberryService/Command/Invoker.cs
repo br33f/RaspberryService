@@ -61,17 +61,42 @@ namespace RaspberryService.Command
 
         public void Request_SpinClockwise(Hashtable parameters)
         {
-            MotorService.MotorA.SpinClockwise();
+            string motorName = parameters["motorName"] as string;
+            if (motorName == "A")
+            {
+                MotorService.MotorA.SpinClockwise();
+            } 
+            else
+            {
+
+            }
+
         }
 
         public void Request_SpinCounterClockwise(Hashtable parameters)
         {
-            MotorService.MotorA.SpinCounterClockwise();
+            string motorName = parameters["motorName"] as string;
+            if (motorName == "A")
+            {
+                MotorService.MotorA.SpinCounterClockwise();
+            }
+            else
+            {
+
+            }
         }
 
         public void Request_Stop(Hashtable parameters)
         {
-            MotorService.MotorA.Stop();
+            string motorName = parameters["motorName"] as string;
+            if (motorName == "A")
+            {
+                MotorService.MotorA.Stop();
+            }
+            else
+            {
+
+            }
         }
     }
 }
