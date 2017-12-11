@@ -87,12 +87,14 @@ namespace RaspberryService.Command
 
         private void ProcessRequests()
         {
-            foreach (Request request in RequestQueue)
+            foreach (Request request in RequestQueue.ToArray())
             {
                 string serializedRequest = JsonConvert.SerializeObject(request);
 
                 this.OutputStreamWriter.WriteLine(Utils.Base64Encode(serializedRequest));
                 this.OutputStreamWriter.Flush();
+
+                RequestQueue.Remove(request);
             }
         }
 

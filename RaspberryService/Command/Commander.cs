@@ -40,6 +40,8 @@ namespace RaspberryService.Command
         // Light emitting diode
         private Rgb.Service RgbService;
 
+        // TemperatureSensor
+        private TemperatureSensor.Service TemperatureSensorService;
 
         public Commander(BackgroundTaskDeferral deferral)
         {
@@ -59,6 +61,7 @@ namespace RaspberryService.Command
             this.InitializeLightbulbService();
             this.InitializeMotorService();
             this.InitializeRgbService();
+            this.InitializeTemperatureSensorService();
             this.InitializeInvoker();
         }
 
@@ -94,6 +97,11 @@ namespace RaspberryService.Command
         private void InitializeRgbService()
         {
             this.RgbService = new Rgb.Service(this.OutputControlerService);
+        }
+
+        private void InitializeTemperatureSensorService()
+        {
+            this.TemperatureSensorService = new TemperatureSensor.Service(this.OutputControlerService);
         }
 
         private async void OnInputStreamSocketConnectionReceived(StreamSocketListener sender, StreamSocketListenerConnectionReceivedEventArgs args)
