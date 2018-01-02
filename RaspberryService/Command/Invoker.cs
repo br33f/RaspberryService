@@ -68,7 +68,7 @@ namespace RaspberryService.Command
             } 
             else
             {
-
+                MotorService.MotorB.SpinClockwise();
             }
 
         }
@@ -82,7 +82,7 @@ namespace RaspberryService.Command
             }
             else
             {
-
+                MotorService.MotorB.SpinCounterClockwise();
             }
         }
 
@@ -95,7 +95,7 @@ namespace RaspberryService.Command
             }
             else
             {
-
+                MotorService.MotorB.Stop();
             }
         }
     }

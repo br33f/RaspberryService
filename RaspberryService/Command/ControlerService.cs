@@ -67,6 +67,7 @@ namespace RaspberryService.Command
             OutputStreamWriter = new StreamWriter(outStream);
 
             ProcessRequests();
+            this.RequestQueue.Clear();
             this.RequestQueue.CollectionChanged += OnRequestQueueChange;
 
             this.NotifyServiceUp("IsTcpEnabled");
@@ -87,14 +88,22 @@ namespace RaspberryService.Command
 
         private void ProcessRequests()
         {
-            foreach (Request request in RequestQueue.ToArray())
+            if (OutputStreamWriter == null) return;
+
+            try
             {
-                string serializedRequest = JsonConvert.SerializeObject(request);
+                foreach (Request request in RequestQueue.ToArray())
+                {
+                    string serializedRequest = JsonConvert.SerializeObject(request);
 
-                this.OutputStreamWriter.WriteLine(Utils.Base64Encode(serializedRequest));
-                this.OutputStreamWriter.Flush();
+                    this.OutputStreamWriter.WriteLine(Utils.Base64Encode(serializedRequest));
+                    this.OutputStreamWriter.Flush();
 
-                RequestQueue.Remove(request);
+                    RequestQueue.Remove(request);
+                }
+            } catch (Exception)
+            {
+                OutputStreamWriter = null;
             }
         }
 

@@ -12,9 +12,9 @@ namespace RaspberryService.Rgb
 {
     public enum DiodeColor : int
     {
-        RED = 17,
-        GREEN = 27,
-        BLUE = 22
+        RED = 18,
+        GREEN = 23,
+        BLUE = 24
     }
 
     class Service : AbstractDeviceService
